@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - Employee Access Control</title>
+    <style>
+        body {
+            background: #f7fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2d3748;
+            padding: 40px;
+            margin: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #2b6cb0;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #4a5568;
+            margin-bottom: 25px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        a.button {
+            display: inline-block;
+            background-color: #3182ce;
+            color: white;
+            padding: 12px 30px;
+            margin: 5px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #2c5282;
+        }
+        a.logout-btn {
+            background-color: #e53e3e;
+        }
+        a.logout-btn:hover {
+            background-color: #9b2c2c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ username }}!</h1>
+        <h2>Your Role: {{ role }}</h2>
+
+        {% if role == 'Admin' %}
+          <p>You have full access to manage employee records.</p>
+          <a href="{{ url_for('employee_list') }}" class="button">Manage Employees</a>
+          <a href="{{ url_for('employee_add') }}" class="button">Add Employee</a>
+        {% elif role == 'Manager' %}
+          <p>You can view and edit employee records (only Employees, no Admins or other Managers).</p>
+          <a href="{{ url_for('employee_list') }}" class="button">Manage Employees</a>
+        {% else %}
+          <p>You have limited access. You can view your profile only.</p>
+        {% endif %}
+
+        <!-- Add Profile Button for ALL users -->
+        <a href="{{ url_for('profile') }}" class="button">View Profile</a>
+
+        <br><br>
+        <a href="{{ url_for('logout') }}" class="button logout-btn">Logout</a>
+    </div>
+</body>
+</html>

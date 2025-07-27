@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ action }} Employee</title>
+    <style>
+        body {
+            background: #f7fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px;
+            margin: 0;
+            color: #2d3748;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2b6cb0;
+            margin-bottom: 25px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input, select {
+            padding: 10px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2c5282;
+        }
+        a {
+            text-decoration: none;
+            color: #3182ce;
+            margin-top: 15px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ action }} Employee</h1>
+        <form method="POST">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" value="{{ employee.username if employee else '' }}" required>
+
+            <label for="password">Password: {% if action == 'Edit' %}<small>(Leave blank to keep current password)</small>{% endif %}</label>
+            <input type="password" name="password" id="password" {% if action == 'Add' %}required{% endif %}>
+
+            <label for="role_id">Role:</label>
+            <select name="role_id" id="role_id" required>
+                {% for role in roles %}
+                    <option value="{{ role.id }}" {% if employee and employee.role_id == role.id %}selected{% endif %}>{{ role.role_name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">{{ action }}</button>
+        </form>
+
+        <a href="{{ url_for('employee_list') }}">← Back to Employee List</a>
+    </div>
+</body>
+</html>

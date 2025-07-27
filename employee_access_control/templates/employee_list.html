@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Employee List - Employee Access Control</title>
+    <style>
+        body {
+            background: #edf2f7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px;
+            margin: 0;
+            color: #2d3748;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px 40px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2b6cb0;
+            margin-bottom: 25px;
+        }
+        form.search-form {
+            margin-bottom: 25px;
+        }
+        input[type="text"] {
+            padding: 10px 14px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 10px;
+            width: 250px;
+            font-size: 15px;
+            outline-color: #3182ce;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #3182ce;
+        }
+        button.search-btn {
+            padding: 10px 18px;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+        button.search-btn:hover {
+            background-color: #2c5282;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #cbd5e0;
+        }
+        th {
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+        }
+        .action-buttons a {
+            margin-right: 10px;
+            color: #3182ce;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .action-buttons form {
+            display: inline;
+        }
+        .action-buttons button {
+            background: none;
+            border: none;
+            color: #e53e3e;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Employee List</h1>
+
+        <form class="search-form" method="get" action="{{ url_for('employee_list') }}">
+            <input type="text" name="search" placeholder="Search by username" value="{{ search }}">
+            <button class="search-btn" type="submit">Search</button>
+        </form>
+
+        {% if employees %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        {% if role in ['Admin', 'Manager'] %}
+                        <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employees %}
+                    <tr>
+                        <td>{{ emp.username }}</td>
+                        <td>{{ emp.role_name }}</td>
+                        {% if role == 'Admin' or (role == 'Manager' and emp.role_name == 'Employee') %}
+                        <td class="action-buttons">
+                            <a href="{{ url_for('employee_edit', employee_id=emp.id) }}">Edit</a>
+                            {% if role == 'Admin' %}
+                            <form method="POST" action="{{ url_for('employee_delete', employee_id=emp.id) }}">
+                                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                        {% elif role in ['Admin', 'Manager'] %}
+                        <td>-</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No employees found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
